@@ -29,3 +29,17 @@ The analysis can be run using R. The main script is designed to be executed from
 
 ```bash
 Rscript main_script.R
+
+## Requirements
+
+The code requires R (≥ 4.0 recommended) and the following CRAN packages:
+
+- mgcv
+- itsadug
+- ggplot2
+- scales
+
+All packages can be installed directly from CRAN, e.g.:
+
+```r
+install.packages(c("mgcv", "itsadug", "ggplot2", "scales"))
