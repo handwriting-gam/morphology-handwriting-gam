@@ -778,6 +778,157 @@ print(summary(gam_x_full_wo_word_fin))
 aic_x_wo_word_fin <- AIC(gam_x_full, gam_x_full_wo_word_fin)
 anova_x_wo_word_fin <- anova(gam_x_full, gam_x_full_wo_word_fin, test="F")
 
+## without bigram frequencies 
+
+gam_x_wo_bigram <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_x_wo_bigram <- acf(resid(gam_x_wo_bigram)[!data$AR.start], plot = FALSE)$acf[2]
+gam_x_wo_bigram <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next ,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_x_wo_bigram
+)
+print(rho_x_wo_bigram)
+print(summary(gam_x_wo_bigram))
+
+aic_x_wo_bigram <- AIC(gam_x_full, gam_x_wo_bigram)
+anova_x_wo_bigram <- anova(gam_x_full, gam_x_wo_bigram, test="F")
+
+## without bigram frequencies before
+
+gam_x_wo_bigram_before <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_x_wo_bigram_before <- acf(resid(gam_x_wo_bigram_before)[!data$AR.start], plot = FALSE)$acf[2]
+gam_x_wo_bigram_before <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next ,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_x_wo_bigram_before
+)
+print(rho_x_wo_bigram_before)
+print(summary(gam_x_wo_bigram_before))
+
+aic_x_wo_bigram_before <- AIC(gam_x_full, gam_x_wo_bigram_before)
+anova_x_wo_bigram_before <- anova(gam_x_full, gam_x_wo_bigram_before, test="F")
+
+## without bigram frequencies after
+
+gam_x_wo_bigram_after <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_x_wo_bigram_after <- acf(resid(gam_x_wo_bigram_after)[!data$AR.start], plot = FALSE)$acf[2]
+gam_x_wo_bigram_after <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next ,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_x_wo_bigram_after
+)
+print(rho_x_wo_bigram_after)
+print(summary(gam_x_wo_bigram_after))
+
+aic_x_wo_bigram_after <- AIC(gam_x_full, gam_x_wo_bigram_after)
+anova_x_wo_bigram_after <- anova(gam_x_full, gam_x_wo_bigram_after, test="F")
+
+## without pen positions
+
+gam_x_wo_pen_position <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)),
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_x_wo_pen_position <- acf(resid(gam_x_wo_pen_position)[!data$AR.start], plot = FALSE)$acf[2]
+gam_x_wo_pen_position <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)),
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_x_wo_pen_position
+)
+print(rho_x_wo_pen_position)
+print(summary(gam_x_wo_pen_position))
+
+aic_x_wo_pen_position <- AIC(gam_x_full, gam_x_wo_pen_position)
+anova_x_wo_pen_position <- anova(gam_x_full, gam_x_wo_pen_position, test="F")
+
+
+## without end position previous
+
+gam_x_wo_end_position_previous <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=start_position_next, k=k) + start_position_next,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_x_wo_end_position_previous <- acf(resid(gam_x_wo_end_position_previous)[!data$AR.start], plot = FALSE)$acf[2]
+gam_x_wo_end_position_previous <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=start_position_next, k=k) + start_position_next ,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_x_wo_end_position_previous
+)
+print(rho_x_wo_end_position_previous)
+print(summary(gam_x_wo_end_position_previous))
+
+aic_x_wo_end_position_previous <- AIC(gam_x_full, gam_x_wo_end_position_previous)
+anova_x_wo_end_position_previous <- anova(gam_x_full, gam_x_wo_end_position_previous, test="F")
+
+## without start position next
+
+gam_x_wo_start_position_next <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_x_wo_start_position_next <- acf(resid(gam_x_wo_start_position_next)[!data$AR.start], plot = FALSE)$acf[2]
+gam_x_wo_start_position_next <- bam(
+    x ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_x_wo_start_position_next
+)
+print(rho_x_wo_start_position_next)
+print(summary(gam_x_wo_start_position_next))
+
+aic_x_wo_start_position_next <- AIC(gam_x_full, gam_x_wo_start_position_next)
+anova_x_wo_start_position_next <- anova(gam_x_full, gam_x_wo_start_position_next, test="F")
+
 
 ## print AIC differences
 
@@ -796,6 +947,14 @@ print("word:")
 print(aic_x_wo_word)
 print(aic_x_wo_word_ini)
 print(aic_x_wo_word_fin)
+print("bigram:")
+print(aic_x_wo_bigram)
+print(aic_x_wo_bigram_before)
+print(aic_x_wo_bigram_after)
+print("neighboring letters:")
+print(aic_x_wo_pen_position)
+print(aic_x_wo_end_position_previous)
+print(aic_x_wo_start_position_next)
 
 ## print Anova differences
 
@@ -814,6 +973,14 @@ print("word:")
 print(anova_x_wo_word)
 print(anova_x_wo_word_ini)
 print(anova_x_wo_word_fin)
+print("bigram:")
+print(anova_x_wo_bigram)
+print(anova_x_wo_bigram_before)
+print(anova_x_wo_bigram_after)
+print("neighboring letters:")
+print(anova_x_wo_pen_position)
+print(anova_x_wo_end_position_previous)
+print(anova_x_wo_start_position_next)
 
 ## For y
 ## with bigram frequencies and start/end positions of previous/next letters
@@ -1098,6 +1265,157 @@ aic_y_wo_word_fin <- AIC(gam_y_full, gam_y_full_wo_word_fin)
 anova_y_wo_word_fin <- anova(gam_y_full, gam_y_full_wo_word_fin, test="F")
 
 
+## without bigram frequencies 
+
+gam_y_wo_bigram <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_y_wo_bigram <- acf(resid(gam_y_wo_bigram)[!data$AR.start], plot = FALSE)$acf[2]
+gam_y_wo_bigram <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next ,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_y_wo_bigram
+)
+print(rho_y_wo_bigram)
+print(summary(gam_y_wo_bigram))
+
+aic_y_wo_bigram <- AIC(gam_y_full, gam_y_wo_bigram)
+anova_y_wo_bigram <- anova(gam_y_full, gam_y_wo_bigram, test="F")
+
+## without bigram frequencies before
+
+gam_y_wo_bigram_before <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_y_wo_bigram_before <- acf(resid(gam_y_wo_bigram_before)[!data$AR.start], plot = FALSE)$acf[2]
+gam_y_wo_bigram_before <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next ,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_y_wo_bigram_before
+)
+print(rho_y_wo_bigram_before)
+print(summary(gam_y_wo_bigram_before))
+
+aic_y_wo_bigram_before <- AIC(gam_y_full, gam_y_wo_bigram_before)
+anova_y_wo_bigram_before <- anova(gam_y_full, gam_y_wo_bigram_before, test="F")
+
+## without bigram frequencies after
+
+gam_y_wo_bigram_after <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_y_wo_bigram_after <- acf(resid(gam_y_wo_bigram_after)[!data$AR.start], plot = FALSE)$acf[2]
+gam_y_wo_bigram_after <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous + s(norm_t, by=start_position_next, k=k) + start_position_next ,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_y_wo_bigram_after
+)
+print(rho_y_wo_bigram_after)
+print(summary(gam_y_wo_bigram_after))
+
+aic_y_wo_bigram_after <- AIC(gam_y_full, gam_y_wo_bigram_after)
+anova_y_wo_bigram_after <- anova(gam_y_full, gam_y_wo_bigram_after, test="F")
+
+## without end position previous
+
+gam_y_wo_end_position_previous <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=start_position_next, k=k) + start_position_next,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_y_wo_end_position_previous <- acf(resid(gam_y_wo_end_position_previous)[!data$AR.start], plot = FALSE)$acf[2]
+gam_y_wo_end_position_previous <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=start_position_next, k=k) + start_position_next ,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_y_wo_end_position_previous
+)
+print(rho_y_wo_end_position_previous)
+print(summary(gam_y_wo_end_position_previous))
+
+aic_y_wo_end_position_previous <- AIC(gam_y_full, gam_y_wo_end_position_previous)
+anova_y_wo_end_position_previous <- anova(gam_y_full, gam_y_wo_end_position_previous, test="F")
+
+## without pen positions
+
+gam_y_wo_pen_position <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)),
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_y_wo_pen_position <- acf(resid(gam_y_wo_pen_position)[!data$AR.start], plot = FALSE)$acf[2]
+gam_y_wo_pen_position <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)),
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_y_wo_pen_position
+)
+print(rho_y_wo_pen_position)
+print(summary(gam_y_wo_pen_position))
+
+aic_y_wo_pen_position <- AIC(gam_y_full, gam_y_wo_pen_position)
+anova_y_wo_pen_position <- anova(gam_y_full, gam_y_wo_pen_position, test="F")
+
+## without start position next
+
+gam_y_wo_start_position_next <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8
+)
+rho_y_wo_start_position_next <- acf(resid(gam_y_wo_start_position_next)[!data$AR.start], plot = FALSE)$acf[2]
+gam_y_wo_start_position_next <- bam(
+    y ~ s(norm_t, by=cat, k=k) + cat + s(norm_t, by=word_ini, k=k) + word_ini + s(norm_t, by=word_fin, k=k) + word_fin + s(norm_t, by=morph_ini, k=k) + morph_ini + s(norm_t, by=morph_fin, k=k) + morph_fin + s(norm_t, by=syl_ini, k=k) + syl_ini + s(norm_t, by=syl_fin, k=k) + syl_fin + s(bigram_before_logfreq, k=k_freq) + ti(norm_t, bigram_before_logfreq, k=c(k_time,k_freq)) + s(bigram_after_logfreq, k=k_freq) + ti(norm_t, bigram_after_logfreq, k=c(k_time,k_freq)) + s(norm_t, by=end_position_previous, k=k) + end_position_previous,
+    data = data,
+    method='fREML',
+    discrete=TRUE,
+    nthreads = 8,
+    AR.start = AR.start,
+    rho=rho_y_wo_start_position_next
+)
+print(rho_y_wo_start_position_next)
+print(summary(gam_y_wo_start_position_next))
+
+aic_y_wo_start_position_next <- AIC(gam_y_full, gam_y_wo_start_position_next)
+anova_y_wo_start_position_next <- anova(gam_y_full, gam_y_wo_start_position_next, test="F")
+
+
 ## print AIC differences
 
 print("AIC")
@@ -1115,6 +1433,14 @@ print("word:")
 print(aic_y_wo_word)
 print(aic_y_wo_word_ini)
 print(aic_y_wo_word_fin)
+print("bigram:")
+print(aic_y_wo_bigram)
+print(aic_y_wo_bigram_before)
+print(aic_y_wo_bigram_after)
+print("neighboring letters:")
+print(aic_y_wo_pen_position)
+print(aic_y_wo_end_position_previous)
+print(aic_y_wo_start_position_next)
 
 ## print Anova differences
 
@@ -1133,6 +1459,14 @@ print("word:")
 print(anova_y_wo_word)
 print(anova_y_wo_word_ini)
 print(anova_y_wo_word_fin)
+print("bigram:")
+print(anova_y_wo_bigram)
+print(anova_y_wo_bigram_before)
+print(anova_y_wo_bigram_after)
+print("neighboring letters:")
+print(anova_y_wo_pen_position)
+print(anova_y_wo_end_position_previous)
+print(anova_y_wo_start_position_next)
 
 ## plotting differences
 
